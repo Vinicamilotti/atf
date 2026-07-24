@@ -15,6 +15,7 @@ type TerraformFileRepository interface {
 	RemoveFromPacman(pkg string) error
 	RemoveFromCustom(name string) error
 	MarkCustomInstalled(name string) error
+	EnsureFileExists() error
 }
 
 type TerraformFileRepositoryImpl struct {
@@ -147,6 +148,21 @@ func (r TerraformFileRepositoryImpl) MarkCustomInstalled(name string) error {
 
 	installation.Installed = true
 	config.CustomInstalations[name] = installation
+
+	return r.writeToFile(config)
+}
+
+func (r TerraformFileRepositoryImpl) EnsureFileExists() error {
+	if _, err := os.Stat(r.fileLocation); err == nil {
+		return nil
+	} else if !os.IsNotExist(err) {
+		return err
+	}
+
+	config, err := r.ReadFromFile()
+	if err != nil {
+		return err
+	}
 
 	return r.writeToFile(config)
 }

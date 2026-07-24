@@ -24,6 +24,11 @@ func main() {
 
 	repo := repository.NewTerraformFileRepository(filepath.Join(homeDir, "atf_file.json"))
 
+	if err := repo.EnsureFileExists(); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+
 	router := cli.CommandRouter{
 		Commands: map[string]cli.CliFunc{},
 	}
