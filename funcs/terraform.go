@@ -62,14 +62,14 @@ func (t TerraformCommand) runPacman(packages []string) error {
 		return nil
 	}
 
-	cmdArgs := append([]string{"-S"}, packages...)
-	cmd := exec.Command("pacman", cmdArgs...)
+	cmdArgs := append([]string{"pacman", "-S"}, packages...)
+	cmd := exec.Command("sudo", cmdArgs...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	cmd.Stdin = os.Stdin
 
 	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("pacman -S %s: %w", strings.Join(packages, " "), err)
+		return fmt.Errorf("sudo pacman -S %s: %w", strings.Join(packages, " "), err)
 	}
 
 	return nil
